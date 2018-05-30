@@ -28,15 +28,15 @@ recipe[db2::default]<br>
 recipe[db2::installfp]<br>
 recipe[db2::instance]<br>
 recipe[db2::createdb]<br>
-<br>
+
 recipe::default installs Db2 10.5<br>
 recipe::installfp installs Db2 10.5.9 fixpack<br>
 recipe::instance creates Db2 database instance<br>
 recipe::createdb creates three Db2 databases required for WebSphere BPM<br>
-<br>
+
 Use the following command to create shadow linux passwords for accounts:<br>
 openssl passwd -1 -salt $(openssl rand -base64 6) [password]<br>
-<br>
+
 License and Authors<br>
 -------------------<br>
 Heavily Modified By:<br>
