@@ -1,0 +1,20 @@
+* ----------------------------------------------
+* Instance properties
+* ----------------------------------------------
+FILE = <%= @file %>
+INSTANCE = <%= @instance_name %>
+<%= @instance_name %>.TYPE = <%= @instance_type %>
+* Instance-owning user
+<%= @instance_name %>.NAME = <%= @db_inst1_user %>
+<%= @instance_name %>.GROUP_NAME = <%= @db_inst1_group %>
+<%= @instance_name %>.HOME_DIRECTORY = <%= @db_inst1_home %>
+<%= @instance_name %>.AUTOSTART = <%= @auto_start %>
+<%= @instance_name %>.SVCENAME = db2c_<%= @db_inst1_user %>
+<%= @instance_name %>.PORT_NUMBER = <%= @port_number %>
+<%= @instance_name %>.FCM_PORT_NUMBER = <%= @fcm_port_number %>
+<%= @instance_name %>.MAX_LOGICAL_NODES = <%= @max_logical_nodes %>
+<%= @instance_name %>.CONFIGURE_TEXT_SEARCH = <%= @configure_text_search %>
+* Fenced user
+<%= @instance_name %>.FENCED_USERNAME = <%= @db_fence1_user %>
+<%= @instance_name %>.FENCED_GROUP_NAME = <%= @db_fence1_group %>
+<%= @instance_name %>.FENCED_HOME_DIRECTORY = <%= @db_fence1_home %>

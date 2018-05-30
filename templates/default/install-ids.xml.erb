@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<agent-input clean='true' temporary='true'>
+  <variables>
+    <variable name='sharedLocation' value='<%= @db2_dir %>/IBMIMShared'/>
+    <!-- Installation location for IBM Data Studio client -->
+    <variable name='installLocation' value='<%= @db2_dir %>/DS4.1.2'/>
+  </variables>
+  <preference name='com.ibm.cic.common.core.preferences.eclipseCache' value='${sharedLocation}'/>
+  <server>
+    <repository location='file:/opt/IBM/db2/ids/disk1/'/>
+  </server>
+  <profile id='IBM Data Studio' installLocation='${installLocation}'>
+    <data key='cic.selector.arch' value='x86_64'/>
+  </profile>
+  <install>
+    <!-- IBM Data Studio client 4.1.2 -->
+    <offering profile='IBM Data Studio' id='com.ibm.datastudio.int.e42' version='4.1.2.20150908_0255' features='com.ibm.app.dev,com.ibm.db.admin,com.ibm.db.runsql,com.ibm.ids.core,tune'/>
+  </install>
+</agent-input>
