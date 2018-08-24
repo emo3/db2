@@ -29,6 +29,7 @@ directory db2fixpack_dir do
   owner 'root'
   group 'root'
   mode '0755'
+  not_if { File.exist?("#{node['db2']['db2_install_dir']}/lib64/db2fstep") }
   action :create
 end
 
@@ -36,8 +37,9 @@ directory base_dir do
   owner 'root'
   group 'root'
   mode '0755'
-  action :create
   recursive true
+  not_if { File.exist?("#{node['db2']['db2_install_dir']}/lib64/db2fstep") }
+  action :create
 end
 
 count = 0
@@ -49,6 +51,7 @@ fpbinaries.each do |package_name|
     command "scp #{node['db2']['ftploginuser']}@#{node['db2']['binaryhost']}:#{node['db2']['ftppath']}/#{package_name} #{db2fixpack_dir}"
     cwd db2fixpack_dir
     only_if { node['db2']['remote_mode'] == 'ftp' }
+    not_if { File.exist?("#{node['db2']['db2_install_dir']}/lib64/db2fstep") }
   end
 
   # Download file via http
@@ -59,6 +62,7 @@ fpbinaries.each do |package_name|
     # group node['db2']['db2inst1-group']
     mode '0755'
     only_if { node['db2']['remote_mode'] == 'http' }
+    not_if { File.exist?("#{node['db2']['db2_install_dir']}/lib64/db2fstep") }
     action :create
   end
 
@@ -72,18 +76,21 @@ fpbinaries.each do |package_name|
       end
       count += 1
     end
+    not_if { File.exist?("#{node['db2']['db2_install_dir']}/lib64/db2fstep") }
   end
 
   execute 'extract-db2' do
     action :run
     command "tar -xvzf #{package_name}"
     cwd db2fixpack_dir
+    not_if { File.exist?("#{node['db2']['db2_install_dir']}/lib64/db2fstep") }
   end
 end
 
 execute 'install-db2' do
   command "#{db2fixpack_dir}/server_t/installFixPack -b #{base_dir}"
   cwd db2fixpack_dir
+  not_if { File.exist?("#{node['db2']['db2_install_dir']}/lib64/db2fstep") }
   action :run
 end
 

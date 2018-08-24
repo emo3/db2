@@ -35,9 +35,11 @@ end
 
 user node['db2']['db2inst1-user'] do
   group node['db2']['db2inst1-group']
+  shell '/bin/bash'
   home node['db2']['db2inst1-home']
-  action :create
   password node['db2']['db2-epassword']
+  manage_home true
+  action :create
 end
 
 directory node['db2']['db2fence1-home'] do
@@ -75,11 +77,20 @@ template "#{binary_dir}/#{node['db2']['db2inst1-INS']}.rsp" do
   owner 'root'
   group 'root'
   mode '0644'
+  not_if { File.exist?("#{node['db2']['db2inst1-home']}/sqllib/db2profile") }
   # notifies :run, 'execute[install-db2]', :immediately
 end
 
 execute 'create-instance' do
   command "#{node['db2']['db2_install_dir']}/instance/db2isetup -r #{binary_dir}/#{node['db2']['db2inst1-INS']}.rsp"
   cwd binary_dir
+  not_if { File.exist?("#{node['db2']['db2inst1-home']}/sqllib/db2profile") }
   action :run
+end
+
+# update instance account bash profile
+template "#{node['db2']['db2inst1-home']}/.bash_profile" do
+  source 'bash_profile.erb'
+  user node['db2']['db2inst1-user']
+  group node['db2']['db2inst1-group']
 end

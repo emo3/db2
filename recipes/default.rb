@@ -28,6 +28,7 @@ directory db2binary_dir do
   owner 'root'
   group 'root'
   mode '0755'
+  not_if { File.exist?("#{node['db2']['db2_install_dir']}/bin/db2") }
   action :create
 end
 
@@ -39,6 +40,7 @@ binaries.each do |package_name|
     command "scp #{node['db2']['ftploginuser']}@#{node['db2']['binaryhost']}:#{node['db2']['ftppath']}/#{package_name} #{db2binary_dir}"
     cwd db2binary_dir
     only_if { node['db2']['remote_mode'] == 'ftp' }
+    not_if { File.exist?("#{node['db2']['db2_install_dir']}/bin/db2") }
   end
 
   # Download file via http
@@ -49,6 +51,7 @@ binaries.each do |package_name|
     # group node['db2']['db2inst1-group']
     mode '0755'
     only_if { node['db2']['remote_mode'] == 'http' }
+    not_if { File.exist?("#{node['db2']['db2_install_dir']}/bin/db2") }
     backup false
     action :create
   end
@@ -63,6 +66,7 @@ binaries.each do |package_name|
       end
       count += 1
     end
+    not_if { File.exist?("#{node['db2']['db2_install_dir']}/bin/db2") }
   end
 
   execute 'extract-db2' do
@@ -70,6 +74,7 @@ binaries.each do |package_name|
     command "unzip -q #{package_name}"
     cwd db2binary_dir
     not_if { File.exist?("#{db2binary_dir}/db2setup") }
+    not_if { File.exist?("#{node['db2']['db2_install_dir']}/bin/db2") }
   end
 end
 
@@ -82,12 +87,14 @@ template "#{db2binary_dir}/#{node['db2']['db2-responsefile']}" do
   owner 'root'
   group 'root'
   mode '0644'
+  not_if { File.exist?("#{node['db2']['db2_install_dir']}/bin/db2") }
   # notifies :run, 'execute[install-db2]', :immediately
 end
 
 execute 'install-db2' do
   command "#{db2binary_dir}/db2setup -r #{db2binary_dir}/#{node['db2']['db2-responsefile']}"
   cwd db2binary_dir
+  not_if { File.exist?("#{node['db2']['db2_install_dir']}/bin/db2") }
   action :run
 end
 
