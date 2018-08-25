@@ -34,7 +34,7 @@ group node['db2']['db2inst1-group'] do
 end
 
 user node['db2']['db2inst1-user'] do
-  group node['db2']['db2inst1-group']
+  gid node['db2']['db2inst1-group']
   shell '/bin/bash'
   home node['db2']['db2inst1-home']
   password node['db2']['db2-epassword']
