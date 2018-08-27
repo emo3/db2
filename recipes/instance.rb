@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: db2
-# Recipe:: default
+# Recipe:: instance
 #
 # Copyright 2018, OvertonClan
 #
@@ -19,43 +19,38 @@
 
 binary_dir = Chef::Config[:file_cache_path]
 
+# DB2 fence group
 group node['db2']['db2fence1-group'] do
   action :create
 end
 
+# DB2 fence user
 user node['db2']['db2fence1-user'] do
   group node['db2']['db2fence1-group']
   home node['db2']['db2fence1-home']
   action :create
 end
 
+# DB2 instance group
 group node['db2']['db2inst1-group'] do
   action :create
 end
 
+# DB2 instance user
 user node['db2']['db2inst1-user'] do
-  gid node['db2']['db2inst1-group']
-  shell '/bin/bash'
+  group node['db2']['db2inst1-group']
   home node['db2']['db2inst1-home']
-  password node['db2']['db2-epassword']
+  action :create
+end
+
+# Database user
+user node['db2']['db2user1-user'] do
+  gid node['db2']['db2user1-group']
+  shell '/bin/bash'
+  password node['db2']['db2_epassword']
   manage_home true
   action :create
 end
-
-directory node['db2']['db2fence1-home'] do
-  owner node['db2']['db2fence1-user']
-  group node['db2']['db2fence1-group']
-  mode '0755'
-  action :create
-end
-
-directory node['db2']['db2inst1-home'] do
-  owner node['db2']['db2inst1-user']
-  group node['db2']['db2inst1-group']
-  mode '0755'
-  action :create
-end
-
 template "#{binary_dir}/#{node['db2']['db2inst1-INS']}.rsp" do
   source "#{node['db2']['db2inst1-INS']}.erb"
   variables(
@@ -74,11 +69,8 @@ template "#{binary_dir}/#{node['db2']['db2inst1-INS']}.rsp" do
     max_logical_nodes: node['db2']['max_logical_nodes'],
     configure_text_search: node['db2']['configure_text_search']
   )
-  owner 'root'
-  group 'root'
   mode '0644'
   not_if { File.exist?("#{node['db2']['db2inst1-home']}/sqllib/db2profile") }
-  # notifies :run, 'execute[install-db2]', :immediately
 end
 
 execute 'create-instance' do
@@ -93,4 +85,5 @@ template "#{node['db2']['db2inst1-home']}/.bash_profile" do
   source 'bash_profile.erb'
   user node['db2']['db2inst1-user']
   group node['db2']['db2inst1-group']
+  mode '0644'
 end

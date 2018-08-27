@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: db2
-# Recipe:: default
+# Recipe:: installfp
 #
 # Copyright 2018, OvertonClan
 #
@@ -19,33 +19,26 @@
 
 db2fixpack_dir = "#{Chef::Config[:file_cache_path]}/DB2fixpack"
 fpbinaries = [node['db2']['packagefp1-name-1']]
-checksums = [node['db2']['packagefp1-sha256sum']]
 base_dir = node['db2']['db2_install_dir']
 
 package node['db2']['ubuntu'] if node['platform_family'] == 'debian'
 package node['db2']['rhel']   if node['platform_family'] == 'rhel'
 
 directory db2fixpack_dir do
-  owner 'root'
-  group 'root'
   mode '0755'
   not_if { File.exist?("#{node['db2']['db2_install_dir']}/lib64/db2fstep") }
   action :create
 end
 
 directory base_dir do
-  owner 'root'
-  group 'root'
   mode '0755'
   recursive true
   not_if { File.exist?("#{node['db2']['db2_install_dir']}/lib64/db2fstep") }
   action :create
 end
 
-count = 0
-
 fpbinaries.each do |package_name|
-  Chef::Log.info('copying packages')
+  # Chef::Log.info('copying packages')
   execute 'copy-db2' do
     action :run
     command "scp #{node['db2']['ftploginuser']}@#{node['db2']['binaryhost']}:#{node['db2']['ftppath']}/#{package_name} #{db2fixpack_dir}"
@@ -64,19 +57,6 @@ fpbinaries.each do |package_name|
     only_if { node['db2']['remote_mode'] == 'http' }
     not_if { File.exist?("#{node['db2']['db2_install_dir']}/lib64/db2fstep") }
     action :create
-  end
-
-  ruby_block 'Validate Package Checksum' do
-    action :run
-    block do
-      require 'digest'
-      checksum = Digest::SHA256.file("#{db2fixpack_dir}/#{package_name}").hexdigest
-      if checksum != checksums[count]
-        raise "#{package_name} #{count} Downloaded package Checksum #{checksum} does not match known checksum #{checksums[count]}"
-      end
-      count += 1
-    end
-    not_if { File.exist?("#{node['db2']['db2_install_dir']}/lib64/db2fstep") }
   end
 
   execute 'extract-db2' do
