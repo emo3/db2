@@ -11,7 +11,7 @@ describe 'db2::default' do
     let(:chef_run) do
       # for a complete list of available platforms and versions see:
       # https://github.com/customink/fauxhai/blob/master/PLATFORMS.md
-      runner = ChefSpec::ServerRunner.new(platform: 'redhat', version: '7.4')
+      runner = ChefSpec::ServerRunner.new(platform: 'redhat', version: '7.5')
       runner.converge(described_recipe)
     end
 
