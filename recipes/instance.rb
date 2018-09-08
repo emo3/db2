@@ -30,6 +30,12 @@ user node['db2']['db2fence1-user'] do
   home node['db2']['db2fence1-home']
   action :create
 end
+directory node['db2']['db2fence1-home'] do
+  user  node['db2']['db2fence1-user']
+  group node['db2']['db2fence1-group']
+  mode '0755'
+  action :create
+end
 
 # DB2 instance group
 group node['db2']['db2inst1-group'] do
@@ -42,6 +48,12 @@ user node['db2']['db2inst1-user'] do
   home node['db2']['db2inst1-home']
   action :create
 end
+directory node['db2']['db2inst1-home'] do
+  user  node['db2']['db2inst1-user']
+  group node['db2']['db2inst1-group']
+  mode '0755'
+  action :create
+end
 
 # Database user
 user node['db2']['db2user1-user'] do
@@ -49,6 +61,12 @@ user node['db2']['db2user1-user'] do
   shell '/bin/bash'
   password node['db2']['db2_epassword']
   manage_home true
+  action :create
+end
+directory node['db2']['db2user1-home'] do
+  user  node['db2']['db2user1-user']
+  group node['db2']['db2user1-group']
+  mode '0755'
   action :create
 end
 template "#{binary_dir}/#{node['db2']['db2inst1-INS']}.rsp" do
