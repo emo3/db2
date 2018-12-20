@@ -58,9 +58,9 @@ describe 'godzilla::default' do
     end
   end
 
-  context 'When all attributes are default, on Redhat 7.6' do
+  context 'When all attributes are default, on Redhat 7.x' do
     let(:chef_run) do
-      runner = ChefSpec::ServerRunner.new(platform: 'redhat', version: '7.6')
+      runner = ChefSpec::ServerRunner.new(platform: 'redhat', version: '7')
       runner.converge(described_recipe)
     end
 
