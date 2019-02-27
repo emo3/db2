@@ -16,7 +16,6 @@ verifier:
 
 platforms:
   - name: centos-7
-  - name: ubuntu-16.04
 
 suites:
   - name: default
@@ -27,5 +26,5 @@ suites:
       - recipe[db2::createdb]
     verifier:
       inspec_tests:
-        - test/smoke/default
+        - test/integration/default
     attributes:

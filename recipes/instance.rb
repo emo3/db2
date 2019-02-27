@@ -2,7 +2,7 @@
 # Cookbook Name:: db2
 # Recipe:: instance
 #
-# Copyright 2018, Ed Overton
+# Copyright 2019, Ed Overton
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

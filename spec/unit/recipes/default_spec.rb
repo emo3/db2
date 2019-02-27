@@ -1,8 +1,7 @@
-#
 # Cookbook:: db2
 # Spec:: default
 #
-# Copyright:: 2018, Ed Overton
+# Copyright:: 2019, Ed Overton, Apache 2.0
 
 require 'spec_helper'
 

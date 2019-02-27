@@ -14,7 +14,7 @@ Requirements
 ------------
 Platforms:<br>
 RHEL/Centos 7.5<br>
-Ubuntu 16.04<br>
+
 
 Attributes
 ----------
