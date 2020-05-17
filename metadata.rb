@@ -1,6 +1,6 @@
 name             'db2'
 maintainer       'Ed Overton'
-maintainer_email 'infuse.1301@gmail.com'
+maintainer_email 'bogus@gmail.com'
 license          'Apache 2.0'
 description      'Installs/Configures IBM DB2 Enterprise Server version 10.5.9'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
