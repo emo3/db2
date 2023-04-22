@@ -1,39 +1,26 @@
 #
-# Cookbook Name:: db2
+# Cookbook:: db2
 # Recipe:: installfp
 #
-# Copyright 2019, Ed Overton
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
+# Copyright:: 2019, Ed Overton, Apache 2.0
 
 db2fixpack_dir = "#{Chef::Config[:file_cache_path]}/DB2fixpack"
 fpbinaries = [node['db2']['packagefp1-name-1']]
 base_dir = node['db2']['db2_install_dir']
 
-package node['db2']['ubuntu'] if node['platform_family'] == 'debian'
-package node['db2']['rhel']   if node['platform_family'] == 'rhel'
+package node['db2']['ubuntu'] if platform_family?('debian')
+package node['db2']['rhel']   if platform_family?('rhel')
 
 directory db2fixpack_dir do
   mode '0755'
-  not_if { File.exist?("#{node['db2']['db2_install_dir']}/bin/db2csap") }
+  not_if { ::File.exist?("#{node['db2']['db2_install_dir']}/bin/db2csap") }
   action :create
 end
 
 directory base_dir do
   mode '0755'
   recursive true
-  not_if { File.exist?("#{node['db2']['db2_install_dir']}/bin/db2csap") }
+  not_if { ::File.exist?("#{node['db2']['db2_install_dir']}/bin/db2csap") }
   action :create
 end
 
@@ -44,16 +31,15 @@ fpbinaries.each do |package_name|
     command "scp #{node['db2']['ftploginuser']}@#{node['db2']['binaryhost']}:#{node['db2']['ftppath']}/#{package_name} #{db2fixpack_dir}"
     cwd db2fixpack_dir
     only_if { node['db2']['remote_mode'] == 'ftp' }
-    not_if { File.exist?("#{node['db2']['db2_install_dir']}/bin/db2csap") }
+    not_if { ::File.exist?("#{node['db2']['db2_install_dir']}/bin/db2csap") }
   end
 
   # Download file via http
   remote_file "#{db2fixpack_dir}/#{package_name}" do
     source "#{node['db2']['binaryhost']}/#{node['db2']['ftppath']}/#{package_name}"
-    not_if { File.exist?("#{db2fixpack_dir}/#{package_name}") }
     mode '0755'
     only_if { node['db2']['remote_mode'] == 'http' }
-    not_if { File.exist?("#{node['db2']['db2_install_dir']}/bin/db2csap") }
+    not_if { ::File.exist?("#{node['db2']['db2_install_dir']}/bin/db2csap") }
     action :create
   end
 
@@ -61,14 +47,14 @@ fpbinaries.each do |package_name|
     action :run
     command "tar -xvzf #{package_name}"
     cwd db2fixpack_dir
-    not_if { File.exist?("#{node['db2']['db2_install_dir']}/bin/db2csap") }
+    not_if { ::File.exist?("#{node['db2']['db2_install_dir']}/bin/db2csap") }
   end
 end
 
 execute 'install-db2' do
   command "#{db2fixpack_dir}/server_t/installFixPack -b #{base_dir}"
   cwd db2fixpack_dir
-  not_if { File.exist?("#{node['db2']['db2_install_dir']}/bin/db2csap") }
+  not_if { ::File.exist?("#{node['db2']['db2_install_dir']}/bin/db2csap") }
   action :run
 end
 
